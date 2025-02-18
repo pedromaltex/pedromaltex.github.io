@@ -426,3 +426,7 @@ def deposit():
         return redirect("/")
 
     return render_template("deposit.html")
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
