@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Quoted
+{% endblock %}
+
+{% block main %}
+    <p style="color: #AAA;">
+        A share of {{stock.name}} Corporation Common Stock ({{stock.symbol}}) costs {{stock.price | usd}}.
+    </p>
+    <div class="graph_line">
+        <div class="chart-container" style="position: relative; height:60vh; width:100%;">
+            <canvas id= "lineChart" width="700" height="400"></canvas>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+
+                        var ctx = document.getElementById("lineChart").getContext("2d");
+
+                        var lineChart = new Chart(ctx, {
+                            type: "line",
+
+                            data: {
+                                labels: {{ labels | safe }},
+                                datasets: [{
+                                    label: "Stock Price",
+                                    data: {{ values | safe }},
+                                    fill: false,
+                                    borderColor: "rgb(75, 192, 192)",
+                                    backgroundColor: "#353535",
+                                    pointRadius: 0, // Aumenta os pontos para melhor visualização da tooltip
+                                    lineTension: 0.4,
+                                }]
+                            },
+
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                spanGaps: true,
+                                hover: {
+                                    mode: 'index',
+                                    intersect: false, // Permite hover ao longo do eixo X
+                                },
+                            }
+                        });
+                    });
+                </script>
+                <div class="button-container" id="myButtons" style="width: 100%;">
+                    <script>
+                        // Função para meter os botões a funcionar
+
+                        function toggleButton(button) {
+                            button.classList.toggle('selected');
+                            // Coleta todas as opções selecionadas
+                            let selectedButtons = document.querySelectorAll('.selected');
+                            let formData = [];
+                            selectedButtons.forEach(btn => {
+                                formData.push(btn.value);
+                            });
+
+                            // Atualiza o campo oculto com as opções selecionadas
+                            document.getElementById('selecao').value = formData.join(',');
+
+                            // Submete o formulário imediatamente
+                            document.getElementById('form').submit();
+                        }
+                    </script>
+                    <form id="form" method="POST" style="height: 100%;">
+                        <button class="btn" value="1d"  id="1d"  type="button" onclick="toggleButton(this)">1d</button>
+                        <button class="btn" value="1wk"  id="1w"  type="button" onclick="toggleButton(this)">1w</button>
+                        <button class="btn" value="1mo"  id="1m"  type="button" onclick="toggleButton(this)">1m</button>
+                        <button class="btn" value="YTD" id="YTD" type="button" onclick="toggleButton(this)">YTD</button>
+                        <button class="btn" value="1y"  id="1y"  type="button" onclick="toggleButton(this)">1y</button>
+                        <button class="btn" value="5y"  id="5y"  type="button" onclick="toggleButton(this)">5y</button>
+                        <button class="btn" value="20y" id="20y" type="button" onclick="toggleButton(this)">20y</button>
+                        <button class="btn" value="99y" id="Max" type="button" onclick="toggleButton(this)">Max.</button>
+
+                        <input type="hidden" id="selecao" name="selecao">
+                    </form>
+                </div>
+        </div>
+    </div>
+{% endblock %}
