@@ -84,7 +84,9 @@ Portfolio
     </div>
 
     <!-- pie Plot -->
-    <div id="myPlot" style="position: relative; height:50vh; width:49%">
+    <div id="myPlot" style="position: relative; align-items: center; height:50vh; width:49%">
+        <canvas id="myPieChart"></canvas>
+
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 console.log("Script is running!");
@@ -96,7 +98,7 @@ Portfolio
 
                 if (!portfolio || portfolio.length === 0) {
                     console.log("No stocks in portfolio.");
-                    document.getElementById("myPlot").innerHTML = "<p class='text-center'>No stocks in portfolio</p>";
+                    document.getElementById("myPieChart").outerHTML = "<p class='text-center'>No stocks in portfolio</p>";
                     return;
                 }
 
@@ -107,25 +109,36 @@ Portfolio
                 console.log("Labels:", labels);
                 console.log("Values:", values);
 
-                // Define Pie Chart data
-                const data = [{
-                    labels: labels,
-                    values: values,
+                const ctx = document.getElementById("myPieChart").getContext("2d");
+
+                new Chart(ctx, {
                     type: "pie",
-                    textinfo: "label+percent",
-                    insidetextorientation: "radial"
-                }];
-
-                const layout = {
-                    //title: "Portfolio Distribution",
-                    autosize: true,  // Ensures responsive resizing
-                    height: 400, // Definindo uma altura maior para o gráfico de pizza
-                    paper_bgcolor: "#353535",
-                    font: { color: "#ffffff" }
-                };
-
-                console.log("Plotting graph...");
-                Plotly.newPlot("myPlot", data, layout);
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: [
+                                "rgba(255, 99, 132)",  // Red (40% opacity)
+                                "rgba(54, 162, 235)",  // Blue
+                                "rgba(255, 206, 86)",  // Yellow
+                                "rgba(75, 192, 192)",  // Teal
+                                "rgba(153, 102, 255)", // Purple
+                                "rgba(255, 159, 64)"   // Orange
+                            ],
+                            borderWidth: 1,
+                            borderColor: "rgb(75, 192, 192)"
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: "right",
+                                labels: { color: "#ffffff" }
+                            }
+                        }
+                    }
+                });
             });
         </script>
     </div>
