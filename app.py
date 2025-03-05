@@ -9,7 +9,7 @@ from datetime import datetime
 import yfinance
 import json
 
-from helpers import apology, login_required, lookup, usd, get_data
+from helpers import apology, login_required, lookup, usd, get_data, get_news
 
 # Configure application
 app = Flask(__name__)
@@ -117,10 +117,6 @@ def predict():
         return render_template("predicted.html", stock=stock)
     return render_template("predict.html")
 
-@app.route("/news", methods=["GET", "POST"])
-@login_required
-def news():
-    return apology("You still have to do this code")
 
 
 @app.route("/buy", methods=["GET", "POST"])
@@ -426,6 +422,27 @@ def deposit():
         return redirect("/")
 
     return render_template("deposit.html")
+
+
+# GetPoint da news
+@app.route("/news", methods=["GET", "POST"])
+@login_required
+def news():
+    if request.method == "POST":
+        symbol = request.form.get("symbol")  # Obtém o símbolo digitado pelo usuário
+
+        if not symbol:
+            return apology("Missing stock symbol", 400)
+
+        try:
+            news_data = get_news(symbol)  # Busca notícias
+            return render_template("news.html", news=news_data, symbol=symbol)
+        except Exception as e:
+            return apology(f"Error fetching news: {str(e)}", 500)
+
+    return render_template("news.html")  # Exibe a página com o formulário
+
+
 
 
 if __name__ == "__main__":

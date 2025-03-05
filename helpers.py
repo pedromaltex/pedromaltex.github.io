@@ -171,3 +171,43 @@ get_data('^GSPC', '50y', '1d')
     #values = data['Close'].tolist() é a versão simplificada, mas como só queria 2 casas decimais, tive de por esta versão manhosa em baixo
     values = [round(v, 2) for v in data['Close'].tolist()]
     return labels, values'''
+
+
+
+
+import requests
+from datetime import datetime, timezone
+
+# Defina sua chave API do Finnhub
+API_KEY = "cv3qp99r01ql2eusvo70cv3qp99r01ql2eusvo7g" 
+
+def get_news(symbol, max_news=100):
+    """Obtém notícias financeiras para um símbolo específico usando Finnhub"""
+    try:
+        url = f"https://finnhub.io/api/v1/company-news?symbol={symbol}&from=2024-01-01&to={datetime.today().strftime("%Y-%m-%d")}&token={API_KEY}"
+        response = requests.get(url)
+
+        if response.status_code != 200:
+            print(f"[ERROR] Falha ao buscar notícias do Finnhub para {symbol}")
+            return []
+
+        data = response.json()
+
+        news_list = []
+        for article in data[:max_news]:  # Pega até 'max_news' notícias
+            date_parsed = datetime.fromtimestamp(article["datetime"], tz=timezone.utc) if "datetime" in article else None
+
+            news_list.append({
+                "title": article.get("headline", "Sem título"),
+                "link": article.get("url", "#"),
+                "content": article.get("summary", "Sem descrição disponível"),
+                "date": date_parsed,
+                "publisher": article.get("source", "Desconhecido"),
+                "image": article.get("image", None)  # Obtém a imagem da notícia
+            })
+
+        return news_list
+
+    except Exception as e:
+        print(f"[ERROR] Erro ao buscar notícias para {symbol}: {str(e)}")
+        return []

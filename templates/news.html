@@ -5,18 +5,18 @@
 {% endblock %}
 
 {% block main %}
-    <h1>Search for Stock News</h1>
 
     <!-- Formulário para buscar notícias -->
+     
     <form action="/news" method="post">
         <div class="mb-3">
             <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="symbol" placeholder="Symbol" type="text">
         </div>
-        <button class="btn btn-primary" type="submit">Search</button>
+        <button class="btn btn-primary" type="submit" style="margin-bottom: 10px;">Search</button>
     </form>
 
     {% if news %}
-        <h2 class="mt-4">Latest News for {{ symbol }}</h2>
+        <!-- <h2 class="mt-4">Latest News for {{ symbol }}</h2> -->
         <div class="row">
             {% for article in news %}
                 <div class="col-md-4">  <!-- Mudamos para 3 colunas -->
@@ -27,6 +27,7 @@
                         <div class="card-body" style="background-color: #555555;">
                             <h6 class="card-title text-truncate" title="{{ article.title }}" style="color: rgb(75, 192, 192);">{{ article.title }}</h6>
                             <p class="card-text small text-truncate" style="max-height: 60px; overflow: hidden; color: rgb(75, 192, 192);">{{ article.content }}</p>
+                            <p style="max-height: 60px; overflow: hidden; color: rgb(75, 192, 192);">{{ article.date }}</p>
                             <a href="{{ article.link }}" class="btn btn-sm btn-primary" target="_blank">Read More</a>
                         </div>
                     </div>
