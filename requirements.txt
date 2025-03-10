@@ -6,3 +6,4 @@ requests
 yfinance
 matplotlib
 gunicorn
+nltk

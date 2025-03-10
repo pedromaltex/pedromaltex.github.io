@@ -9,6 +9,9 @@ from datetime import datetime
 import yfinance
 import json
 
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
 from helpers import apology, login_required, lookup, usd, get_data, get_news
 
 # Configure application
@@ -436,9 +439,51 @@ def news():
 
         try:
             news_data = get_news(symbol)  # Busca notícias
-            return render_template("news.html", news=news_data, symbol=symbol)
+
+            nltk.download("vader_lexicon")
+            sia = SentimentIntensityAnalyzer()
+
+            content = []
+            i = 0
+            for new in news_data:
+                print('DONE')
+                sentiment = (sia.polarity_scores(new["title"])["compound"] + 
+                             sia.polarity_scores(new["content"])["compound"]) / 2
+                sentimento = "Neutral"
+                if (sentiment >= -0.1) and (sentiment < 0.1):
+                    sentimento = "Neutral"
+                elif 0.1 < sentiment < 0.5:
+                    sentimento = "Buy"
+                elif 0.5 < sentiment <= 1:
+                    sentimento = "Strong Buy"
+                elif -0.5 <= sentiment < -0.1:
+                    sentimento = "Sell"
+                elif -1 <= sentiment < -0.5:
+                    sentimento = "Strong Sell"
+                print('DONE2')
+                content.append({})
+                content[i]['date'] = new['date']
+                content[i]['image'] = new['image']
+                content[i]['title'] = new['title']
+                content[i]['content'] = new['content']
+                content[i]['link'] = new['link']
+                content[i]['sentiment'] = sentimento
+                content[i]['sentiment_num'] = sentiment
+                print('DONE3')
+
+                print('*' * 50)
+                print(content[0])
+                print('*' * 50)
+                print(news_data[0]['title'])
+                print('*' * 50)
+                i+=1
+
+
+            return render_template("news.html", news=news_data, symbol=symbol, content=content)
         except Exception as e:
             return apology(f"Error fetching news: {str(e)}", 500)
+        
+        
 
     return render_template("news.html")  # Exibe a página com o formulário
 
