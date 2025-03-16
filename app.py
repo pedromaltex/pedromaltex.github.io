@@ -12,7 +12,7 @@ import json
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-from helpers import apology, login_required, lookup, usd, get_data, get_news
+from helpers import apology, login_required, lookup, usd, get_data, get_news, correlation
 
 # Configure application
 app = Flask(__name__)
@@ -152,7 +152,6 @@ def buy():
 
         # See current price of the selected stock
         current_price = float(stock["price"])
-        print(current_price)
 
         # see the total cash in wallet
         total_cash_wallet = db.execute(
@@ -193,6 +192,7 @@ def buy():
                 "INSERT INTO history (user_id, symbol, buysell, shares, price, time) VALUES (?, ?, 1, ?, ?, ?)",
                 session["user_id"], symbol, shares, current_price, current_time_formatted
             )
+
 
             # Redirect to home page
             return redirect("/")
@@ -310,7 +310,7 @@ def quote():
         # Redirect to quoted page
         session['via_button'] = True
         return render_template("quoted.html", stock=stock, labels=labels, values=values, \
-                        selected_options=selected_options)
+                        selected_options=selected_options, correlation=correlation(symbol, "^GSPC", 5))
 
     session['via_button'] = False
     return render_template("quote.html")

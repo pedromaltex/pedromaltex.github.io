@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import datetime
 
+import requests
+from datetime import datetime, timezone
 
 def apology(message, code=400):
     """Render message as an apology to user."""
@@ -145,39 +147,6 @@ def get_data(symbol, period='1y', interval='1d'):
 
     return labels, values
 
-
-get_data('^GSPC', '50y', '1d')
-
-
-'''
-    today=datetime.datetime.now()
-
-    data = yf.download(symbol, start=f"{today.year-5}-{today.month}-{today.day}", end=f"{today.year}-{today.month}-{today.day}")
-
-    data.reset_index(inplace=True)
-
-    # Se houver MultiIndex, remover os níveis extras
-    if isinstance(data.columns, pd.MultiIndex):
-        data.columns = data.columns.droplevel(1)
-
-    data = data[['Date', 'Close']]
-
-    # Convertendo datas para string no formato ISO para facilitar a serialização
-    data['Date'] = data['Date'].dt.strftime('%Y-%m-%d')
-
-    # Convertendo para listas compatíveis com JSON
-    labels = data['Date'].tolist()
-
-    #values = data['Close'].tolist() é a versão simplificada, mas como só queria 2 casas decimais, tive de por esta versão manhosa em baixo
-    values = [round(v, 2) for v in data['Close'].tolist()]
-    return labels, values'''
-
-
-
-
-import requests
-from datetime import datetime, timezone
-
 # Defina sua chave API do Finnhub
 API_KEY = "cv3qp99r01ql2eusvo70cv3qp99r01ql2eusvo7g" 
 
@@ -211,3 +180,43 @@ def get_news(symbol, max_news=100):
     except Exception as e:
         print(f"[ERROR] Erro ao buscar notícias para {symbol}: {str(e)}")
         return []
+
+
+def correlation(target_ticker, market_ticker, years_ago):
+    # Baixar os dados históricos
+    day, month, year = datetime.now().day, datetime.now().month, datetime.now().year
+    data = yf.download([target_ticker, market_ticker], start=f"{year-years_ago}-{month}-{day}", end=f"{year}-{month}-{day}")#["Adj Close"]
+
+    # Calcular retornos diários
+    returns = data.pct_change().dropna()
+
+    # Calcular a correlação
+    correlation = returns.corr().iloc[0, 1]
+    correlation = round(correlation, 4)
+
+    return correlation
+
+'''
+    today=datetime.datetime.now()
+
+    data = yf.download(symbol, start=f"{today.year-5}-{today.month}-{today.day}", end=f"{today.year}-{today.month}-{today.day}")
+
+    data.reset_index(inplace=True)
+
+    # Se houver MultiIndex, remover os níveis extras
+    if isinstance(data.columns, pd.MultiIndex):
+        data.columns = data.columns.droplevel(1)
+
+    data = data[['Date', 'Close']]
+
+    # Convertendo datas para string no formato ISO para facilitar a serialização
+    data['Date'] = data['Date'].dt.strftime('%Y-%m-%d')
+
+    # Convertendo para listas compatíveis com JSON
+    labels = data['Date'].tolist()
+
+    #values = data['Close'].tolist() é a versão simplificada, mas como só queria 2 casas decimais, tive de por esta versão manhosa em baixo
+    values = [round(v, 2) for v in data['Close'].tolist()]
+    return labels, values'''
+
+
