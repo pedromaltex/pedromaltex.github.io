@@ -1,5 +1,5 @@
 p {
-    color: #AAA;
+    color: #CCC;
 }
 
 /* Size for brand */
@@ -124,5 +124,10 @@ nav .navbar-brand .yellow
 
 .graph_line {
     display: flex;
-    justify-content: center;
+    justify-content: left;
+}
+
+th, td {
+    color: #CCC;
+    text-align: left;
 }

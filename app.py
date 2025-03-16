@@ -6,7 +6,7 @@ from flask_session import Session
 from flask import jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
-import yfinance
+import yfinance as yf
 import json
 
 import nltk
@@ -309,8 +309,32 @@ def quote():
 
         # Redirect to quoted page
         session['via_button'] = True
+
+
+        price_volume = {}
+        stats = yf.Ticker(symbol)
+        price_volume["marketcap"] = stats.info.get("marketCap")
+        price_volume["pe_ratio"] = round(stats.info.get("trailingPE"), 4)
+        price_volume["eps"] = round(stats.info.get("epsCurrentYear"), 4)
+        price_volume["dividend_yield"] = round(stats.info.get("dividendYield") or 0, 4)
+        price_volume["dividend_rate"] = round(stats.info.get("dividendRate") or 0, 4)
+
+        results={}
+
+        # Função auxiliar para evitar erros caso o índice não exista
+        def get_financial_value(index_name):
+            return stats.financials.loc[index_name].iloc[0] if index_name in stats.financials.index else 0
+
+       # Obtendo valores diretamente do financials
+        results["revenue"] = get_financial_value("Total Revenue")
+        results["cost_of_revenue"] = - get_financial_value("Cost Of Revenue")
+        results["gross_profit"] = get_financial_value("Gross Profit")
+        results["earnings"] = get_financial_value("Net Income")
+        results["other_expenses"] = results["earnings"] - results["gross_profit"]
+
         return render_template("quoted.html", stock=stock, labels=labels, values=values, \
-                        selected_options=selected_options, correlation=correlation(symbol, "^GSPC", 5))
+                        selected_options=selected_options, correlation=correlation(symbol, "^GSPC", 5), \
+                        price_volume=price_volume, results=results)
 
     session['via_button'] = False
     return render_template("quote.html")

@@ -5,12 +5,10 @@ Quoted
 {% endblock %}
 
 {% block main %}
-    <p style="color: #AAA;">
-        A share of {{stock.name}} Corporation Common Stock ({{stock.symbol}}) costs {{stock.price | usd}}.
-    </p>
+    <p> A share of {{stock.name}} Corporation Common Stock ({{stock.symbol}}) costs {{stock.price | usd}}.</p>
     <div class="graph_line">
-        <div class="chart-container" style="position: relative; height:60vh; width:100%;">
-            <canvas id= "lineChart" width="700" height="400"></canvas>
+        <div class="chart-container" style="position: relative; height:40vh; width:50%;">
+            <canvas id= "lineChart" width="700" height="400" style="display: block; margin-left: auto;"></canvas>
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {
 
@@ -77,10 +75,120 @@ Quoted
                         <input type="hidden" id="selecao" name="selecao">
                     </form>
                 </div>
-            <table>
-                <th>Stats</th>
-            </table>
-            <p>This stock as a correlation of {{correlation}} with S&P500.</p>
         </div>
+        
+        <!-- Revenue and Debt-->
+        <div class="chart-container" style="position: relative;height: 40vh; width: 49%;">
+            <canvas id= "waterfallChart" style="display: block; margin-left: auto;"></canvas>
+                <script>
+                    const labels = ["Revenue", "Cost of Revenue", "Gross Profit", "Other Expenses", "Earnings"];
+                    const data = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'My First Dataset',
+                        data: [{{results.get("revenue", 0)}}, {{results.get("cost_of_revenue", 0)}},
+                        {{results.get("gross_profit", 0)}}, {{results.get("other_expenses", 0)}}, {{results.get("earnings", 0)}}, 55, 40],
+                        backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(255, 205, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(201, 203, 207, 0.2)'
+                        ],
+                        borderColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(255, 159, 64)',
+                        'rgb(255, 205, 86)',
+                        'rgb(75, 192, 192)',
+                        'rgb(54, 162, 235)',
+                        'rgb(153, 102, 255)',
+                        'rgb(201, 203, 207)'
+                        ],
+                        borderWidth: 1
+                    }]
+                    };
+               
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var ctx = document.getElementById("waterfallChart").getContext("2d");
+                
+                        var barChart = new Chart(ctx, {
+                            type: "bar",
+                            data: data,
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    });
+                </script>
+                
+
+        </div>
+
     </div>
+
+    <!-- Table with Stats-->
+    <div style="width: 49%; margin-top: 50px;">
+        <table style="margin-top: 20px; font-size: 1.25rem; width: 100%;">
+            <thead>
+                <tr>
+                    <th class="text-start">Price and volume</th>
+                    <th class="text-end">Shares</th>
+                    <th class="text-end">Price</th>
+                    <th class="text-end">TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-start" style="text-align: left;">Market cap</td>
+                    <td class="text-start" style="text-align: right;">{{price_volume["marketcap"]}}</td>
+
+                </tr>
+                <tr>
+                    <td class="text-start">Correlation with S&P500</td>
+                    <td class="text-start" style="text-align: right;">{{correlation}}</td>
+
+                </tr>
+                <tr>
+                    <td class="text-start">P/E ratio</td>
+                    <td class="text-start" style="text-align: right;">{{price_volume["pe_ratio"]}}</td>
+
+                </tr>
+                <tr>
+                    <td class="text-start">Earnings per share</td>
+                    <td class="text-start" style="text-align: right;">{{price_volume["eps"]}}</td>
+
+                </tr>
+                <tr>
+                    <td class="text-start">Dividend Rate</td>
+                    <td class="text-start" style="text-align: right;">${{price_volume["dividend_rate"]}}</td>
+
+                </tr>
+                <tr>
+                    <td class="text-start">Dividend yield</td>
+                    <td class="text-start" style="text-align: right;">{{price_volume["dividend_yield"]}}%</td>
+
+                </tr> 
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td class="border-0 fw-bold text-end" colspan="3">Cash</td>
+                    <td class="border-0 text-end"></td>
+                </tr>
+                <tr>
+                    <td class="border-0 fw-bold text-end" colspan="3">TOTAL</td>
+                    <td class="border-0 fw-bold text-end"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    <p>This stock as a correlation of {{correlation}} with S&P500.</p>
 {% endblock %}
