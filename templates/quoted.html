@@ -5,9 +5,11 @@ Quoted
 {% endblock %}
 
 {% block main %}
-    <p> A share of {{stock.name}} Corporation Common Stock ({{stock.symbol}}) costs {{stock.price | usd}}.</p>
+    <h1>{{stock.name}} ({{stock.symbol}})</h1>
+
     <div class="graph_line">
-        <div class="chart-container" style="position: relative; height:40vh; width:50%;">
+
+        <div class="chart-container" style="position: relative; height:40vh; width: 50%; padding-right: 50px;">
             <canvas id= "lineChart" width="700" height="400" style="display: block; margin-left: auto;"></canvas>
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {
@@ -77,8 +79,86 @@ Quoted
                 </div>
         </div>
         
+        <table style="margin-top: 20px; font-size: 1.25rem; width: 49%; margin-left: auto;">
+            <thead>
+                <tr>
+                    <th class="text-start">Price Target</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-start" style="text-align: right;">Low</td>
+                </tr>
+                <tr>
+                    <td class="text-start" style="text-align: right;">Average price target</td>
+                </tr>
+                <tr>
+                    <td class="text-start" style="text-align: right;">High</td>
+                </tr>
+                <tr>
+                    <td class="text-start" style="text-align: right;">Current Price</td>
+                    <td class="text-start">{{stock.price | usd}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+
+            </tfoot>
+        </table>
         <!-- Revenue and Debt-->
-        <div class="chart-container" style="position: relative;height: 40vh; width: 49%;">
+        
+
+    </div>
+
+    <!-- Table with Stats-->
+    <div style="width: 100%; margin-top: 50px; display: flex;">
+
+        <table style="margin-top: 20px; font-size: 1.25rem; width: 50%;">
+            <thead>
+                <tr>
+                    <th class="text-start">Price and volume</th>
+                    <th class="text-start"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-start" style="text-align: left;">Market cap</td>
+                    <td class="text-start" style="text-align: right;">{{price_volume["marketcap"]}}</td>
+
+
+                </tr>
+                <tr>
+                    <td class="text-start">Correlation with S&P500</td>
+                    <td class="text-start" style="text-align: right; color: yellow;">{{correlation}}</td>
+
+
+                </tr>
+                <tr>
+                    <td class="text-start">P/E ratio</td>
+                    <td class="text-start" style="text-align: right;">{{price_volume["pe_ratio"]}}</td>
+
+
+                </tr>
+                <tr>
+                    <td class="text-start">Earnings per share</td>
+                    <td class="text-start" style="text-align: right;">{{price_volume["eps"]}}</td>
+                </tr>
+                <tr>
+                    <td class="text-start">Dividend Rate</td>
+                    <td class="text-start" style="text-align: right;">${{price_volume["dividend_rate"]}}</td>
+
+                </tr>
+                <tr>
+                    <td class="text-start">Dividend yield</td>
+                    <td class="text-start" style="text-align: right;">{{price_volume["dividend_yield"]}}%</td>
+
+                </tr> 
+            </tbody>
+            <tfoot>
+            
+            </tfoot>
+        </table>
+
+        <div class="chart-container" style="height: 40vh; width: 49%;">
             <canvas id= "waterfallChart" style="display: block; margin-left: auto;"></canvas>
                 <script>
                     const labels = ["Revenue", "Cost of Revenue", "Gross Profit", "Other Expenses", "Earnings"];
@@ -133,62 +213,5 @@ Quoted
         </div>
 
     </div>
-
-    <!-- Table with Stats-->
-    <div style="width: 49%; margin-top: 50px;">
-        <table style="margin-top: 20px; font-size: 1.25rem; width: 100%;">
-            <thead>
-                <tr>
-                    <th class="text-start">Price and volume</th>
-                    <th class="text-end">Shares</th>
-                    <th class="text-end">Price</th>
-                    <th class="text-end">TOTAL</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="text-start" style="text-align: left;">Market cap</td>
-                    <td class="text-start" style="text-align: right;">{{price_volume["marketcap"]}}</td>
-
-                </tr>
-                <tr>
-                    <td class="text-start">Correlation with S&P500</td>
-                    <td class="text-start" style="text-align: right;">{{correlation}}</td>
-
-                </tr>
-                <tr>
-                    <td class="text-start">P/E ratio</td>
-                    <td class="text-start" style="text-align: right;">{{price_volume["pe_ratio"]}}</td>
-
-                </tr>
-                <tr>
-                    <td class="text-start">Earnings per share</td>
-                    <td class="text-start" style="text-align: right;">{{price_volume["eps"]}}</td>
-
-                </tr>
-                <tr>
-                    <td class="text-start">Dividend Rate</td>
-                    <td class="text-start" style="text-align: right;">${{price_volume["dividend_rate"]}}</td>
-
-                </tr>
-                <tr>
-                    <td class="text-start">Dividend yield</td>
-                    <td class="text-start" style="text-align: right;">{{price_volume["dividend_yield"]}}%</td>
-
-                </tr> 
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td class="border-0 fw-bold text-end" colspan="3">Cash</td>
-                    <td class="border-0 text-end"></td>
-                </tr>
-                <tr>
-                    <td class="border-0 fw-bold text-end" colspan="3">TOTAL</td>
-                    <td class="border-0 fw-bold text-end"></td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
     
-    <p>This stock as a correlation of {{correlation}} with S&P500.</p>
 {% endblock %}
