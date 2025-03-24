@@ -12,6 +12,8 @@ import datetime
 import requests
 from datetime import datetime, timezone
 
+from yahooquery import Screener
+
 def apology(message, code=400):
     """Render message as an apology to user."""
 
@@ -196,27 +198,53 @@ def correlation(target_ticker, market_ticker, years_ago):
 
     return correlation
 
-'''
-    today=datetime.datetime.now()
+def get_companiesbysector(sector): # Obtém 100 maiores empresas do determinado setor
+    sector_indices = [
+    'ms_basic_materials',
+    'ms_communication_services',
+    'ms_consumer_cyclical',
+    'ms_consumer_defensive',
+    'ms_energy',
+    'ms_financial_services',
+    'ms_healthcare',
+    'ms_industrials',
+    'ms_real_estate',
+    'ms_technology',
+    'ms_utilities',
+    'most_visited_basic_materials',
+    'most_visited_communication_services',
+    'most_visited_consumer_cyclical',
+    'most_visited_consumer_defensive',
+    'most_visited_energy',
+    'most_visited_financial_services',
+    'most_visited_healthcare',
+    'most_visited_industrials',
+    'most_visited_real_estate',
+    'most_visited_technology',
+    'most_visited_utilities'
+]
 
-    data = yf.download(symbol, start=f"{today.year-5}-{today.month}-{today.day}", end=f"{today.year}-{today.month}-{today.day}")
+        
+    # Obtém as empresas do setor escolhido
+    screener = Screener()
+    data = screener.get_screeners(sector, count=100)  # Pode ajustar 'count'
 
-    data.reset_index(inplace=True)
+    #print(data[sector]['quotes'][0]['symbol'])
 
-    # Se houver MultiIndex, remover os níveis extras
-    if isinstance(data.columns, pd.MultiIndex):
-        data.columns = data.columns.droplevel(1)
+    # Extraindo os símbolos das empresas
+    sector_tickers = [stock['symbol'] for stock in data[f'ms_{sector}']['quotes']]
+    return sector_tickers
 
-    data = data[['Date', 'Close']]
+# Ter o intervalo de tempo a retirar tendo em conta periodo total a consideral
+def get_interval(period):
+    grupos = [('1d','1m'), ('1wk','1h'), ('1mo','1h'), ('YTD','1h'), ('1y','1d'), ('5y','1wk'), ('20y','1mo'), ('99y','3mo')]
+    for i in range(len(grupos)):
+        if period == grupos[i][0]:
+            return grupos[i][1]
+        raise ValueError('Colocou valor errado em get_interval')
 
-    # Convertendo datas para string no formato ISO para facilitar a serialização
-    data['Date'] = data['Date'].dt.strftime('%Y-%m-%d')
-
-    # Convertendo para listas compatíveis com JSON
-    labels = data['Date'].tolist()
-
-    #values = data['Close'].tolist() é a versão simplificada, mas como só queria 2 casas decimais, tive de por esta versão manhosa em baixo
-    values = [round(v, 2) for v in data['Close'].tolist()]
-    return labels, values'''
-
-
+# Comparar duas empresas em termos de alteração de percentagem num tempo específico.
+def compare(stock1, stock2, period): #TODO#
+    data1 = get_data(stock1, period, get_interval(period))
+    data2 = get_data(stock2, period, get_interval(period))
+    

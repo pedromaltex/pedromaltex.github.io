@@ -101,7 +101,6 @@ def index():
     )
 
 
-
 @app.route("/predict", methods=["GET", "POST"])
 @login_required
 def predict():
@@ -119,7 +118,6 @@ def predict():
         return apology("You still have to do the integration with PIC")
         return render_template("predicted.html", stock=stock)
     return render_template("predict.html")
-
 
 
 @app.route("/buy", methods=["GET", "POST"])
@@ -510,8 +508,6 @@ def news():
         
 
     return render_template("news.html")  # Exibe a página com o formulário
-
-
 
 
 if __name__ == "__main__":

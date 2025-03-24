@@ -1,7 +1,6 @@
-p {
+p, h1 {
     color: #CCC;
 }
-
 /* Size for brand */
 nav .navbar-brand
 {
@@ -9,11 +8,9 @@ nav .navbar-brand
     margin-left: auto;
     margin-right: auto;
 }
-
 .navbar {
     background-color: #353535;
 }
-
 /* Colors for brand */
 nav .navbar-brand .red
 {
@@ -23,19 +20,16 @@ nav .navbar-brand .yellow
 {
     color: #f5b82e;
 }
-
 .btn-primary {
     background-color: #ea433b; /* Your custom color */
     color: white; /* Optional: Ensure the text is readable */
     border-color: #434343;
 }
-
 .btn-primary:hover {
     border: solid 2px;
     background-color: #000000; /* Optional: Slightly darker on hover */
     border-color: #434343;
 }
-
 .form-control
 {
     border-color: #ea433b;
@@ -50,12 +44,8 @@ nav .navbar-brand .yellow
     border-color: #ea433b;
     border: solid 2px;
 }
-
-
-
 /* Estilos gerais */
 /* Gráfico de linha */
-
 .chart-container {
     transition: none !important;
     position: relative;
@@ -64,7 +54,6 @@ nav .navbar-brand .yellow
     max-width: 800px;
     height: auto;
 }
-
 /* Botões em baixo de gráfico de linha */
 .button-container {
     transition: none !important;
@@ -74,14 +63,11 @@ nav .navbar-brand .yellow
     max-width: 800px;
     height: auto;
 }
-
 /* Gráfico de pizza */
 #myPlot {
     width: 100%;
     max-width: 600px;
 }
-
-
 /* Botões responsivos */
 .button-container {
     display: flex;
@@ -89,7 +75,6 @@ nav .navbar-brand .yellow
     justify-content: center;
     gap: 5px;
 }
-
 .btn {
     color: rgb(75, 192, 192);
     background-color: transparent;
@@ -97,12 +82,10 @@ nav .navbar-brand .yellow
     border-radius: 5px;
     cursor: pointer;
 }
-
 .btn:hover {
     background-color: rgb(75, 192, 192);
     color: white;
 }
-
 /* Responsividade */
 @media (max-width: 768px) {
     .chart-container, #myPlot {
@@ -114,19 +97,15 @@ nav .navbar-brand .yellow
         justify-content: center;
     }
 }
-
 /* Tabela responsiva */
 .table-container {
     width: 100%;
     overflow-x: auto;
 }
-
-
 .graph_line {
     display: flex;
     justify-content: left;
 }
-
 th, td {
     color: #CCC;
     text-align: left;
